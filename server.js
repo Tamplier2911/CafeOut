@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 
 // UNCAUGHT EXCEPTION HANDLER
-process.on("uncaughtException", err => {
-  console.log("UNCAUGHT EXCEPTION", err.name, err.message);
-  process.emit(1);
-});
+// process.on("uncaughtException", err => {
+//   console.log("UNCAUGHT EXCEPTION", err.name, err.message);
+//   process.emit(1);
+// });
 
 // Initialization of Dotenv Config
 dotenv.config({ path: "./config/config.env" });
