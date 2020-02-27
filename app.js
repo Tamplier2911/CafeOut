@@ -1,5 +1,6 @@
+// CORE
 const express = require("express");
-const morgan = require("morgan");
+const bodyParser = require("body-parser");
 
 // ERROR HANDLERS
 const AppError = require("./utils/appError");
@@ -8,6 +9,9 @@ const globalErrorHandler = require("./controllers/errorController");
 // ROUTERS
 const userRouter = require("./routes/userRoutes");
 const productRouter = require("./routes/productRouter");
+
+// MIDDLEWARES
+const morgan = require("morgan");
 
 // CUSTOM MIDDLEWARES
 const logger = require("./middlewares/logger");
@@ -19,6 +23,10 @@ if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 
 // TESTING MIDDLEWARE
 if (process.env.NODE_ENV === "development") app.use(logger);
+
+app.use(express.json({ limit: "10kb" }));
+app.use(express.urlencoded({ extended: true, limit: "10kb" }));
+app.use(bodyParser.json());
 
 // ROUTES
 app.use("/api/v1/users", userRouter);

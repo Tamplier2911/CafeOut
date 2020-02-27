@@ -13,14 +13,6 @@ const {
 // @route   GET /api/v1/products
 // @access  Public
 exports.getAllProducts = getAll(Product);
-/*
-exports.getAllProducts = (req, res, next) => {
-  res.status(200).json({
-    status: "success",
-    msg: "We are working"
-  });
-};
-*/
 
 // @desc    Get product by id
 // @route   GET /api/v1/products/:id
