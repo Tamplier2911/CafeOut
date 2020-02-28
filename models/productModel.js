@@ -29,6 +29,7 @@ const productSchema = mongoose.Schema(
       trim: true,
       required: [true, "Product must have a summary."]
     },
+    slug: String,
     imageCover: {
       type: String,
       required: [true, "Product must have a cover image."]
@@ -66,6 +67,25 @@ const productSchema = mongoose.Schema(
       type: Number,
       required: [true, "Product must have a prce."]
     },
+    /*
+    ratingsAverage: {
+      type: Number,
+      default: 4.5,
+      min: [1, 'Rating must be above 1.1'],
+      max: [5, 'Rating must be below 5.0'],
+      // 4.66666 * 10 = 46.6666 (rounded to 47) | 47 / 10 = 4.7
+      set: val => Math.round((val * 10) / 10)
+    },
+    ratingsQuantity: {
+      type: Number,
+      default: 0
+    },
+    author: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+      required: [true, "Product must have an author."]
+    },
+    */
     createdAt: {
       type: Date,
       default: Date.now(),
@@ -84,6 +104,11 @@ const productSchema = mongoose.Schema(
 }
 */
 
+productSchema.pre("save", function(next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
 /*
 productSchema.pre(/^find/, function(next) {
   this.populate({
@@ -101,11 +126,6 @@ productSchema.virtual('reviews', {
   localField: '_id'
 });
 */
-
-// productSchema.pre("save", function(next) {
-//   this.slug = slugify(this.name, { lower: true });
-//   next();
-// });
 
 const Product = mongoose.model("Product", productSchema);
 module.exports = Product;

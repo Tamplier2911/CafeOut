@@ -1,4 +1,5 @@
 const AppError = require("../utils/appError");
+const colors = require("colors");
 
 // Invalid ID - wwww
 const handleCastErrorDB = err => {
@@ -37,6 +38,10 @@ const handleJWTExired = err => {
 };
 
 const sendErrorDev = (err, req, res) => {
+  console.log(
+    `Status: ${err.status} \n Name: ${err.name} \n Code: ${err.code} \n Message: ${err.message}`
+      .red
+  );
   // API
   if (req.originalUrl.startsWith("/api")) {
     return res.status(err.statusCode).json({
