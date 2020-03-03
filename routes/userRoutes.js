@@ -2,33 +2,73 @@ const express = require("express");
 const router = express.Router();
 
 // user controller
-const {} = require("../controllers/userController");
+const {
+  getAllUsers,
+  getSingleUser,
+  createNewUser,
+  updateUser,
+  deleteUser,
+  uploadUserPhoto,
+  resizeUserPhoto,
+  updateMe,
+  deleteMe
+} = require("../controllers/userController");
+
+const {
+  protect,
+  signup,
+  restrictTo,
+  login,
+  logout,
+  forgotPassword,
+  resetPassword,
+  updatePassword,
+  getUserObject,
+  isEmailUnique
+} = require("../controllers/authController");
+
+// signup
+router.post("/signup", signup);
+
+// login
+router.post("/login", login);
+
+// logout
+router.get("/logout", logout);
+
+// forgot password
+router.post("/forgotPassword", forgotPassword);
+
+// reset password
+router.patch("/resetPassword/:token", resetPassword);
+
+// PROTECTED
+router.use(protect);
+
+// update password
+router.patch("/updateMyPassword", updatePassword);
+
+// get
+router.get("/getUserObject", getUserObject);
+
+// update currently logged user data
+router.patch("/updateMe", uploadUserPhoto, resizeUserPhoto, updateMe);
+
+// delete currently logged user
+router.delete("/deleteMe", deleteMe);
+
+// RESTRICTED
+router.use(restrictTo("admin", "owner"));
 
 router
   .route("/")
-  .get((req, res, next) => {
-    res.send(`<div>Route: "/users/", Method: "GET"</div>`);
-  })
-  .post((req, res, next) => {
-    res.send(`<div>Route: "/users/", Method: "POST"</div>`);
-  });
+  .get(getAllUsers)
+  .post(createNewUser);
 
 router
   .route("/:id")
-  .get((req, res, next) => {
-    res.send(
-      `<div>Route: "/users/", Method: "GET", Params: ${req.params.id}</div>`
-    );
-  })
-  .patch((req, res, next) => {
-    res.send(
-      `<div>Route: "/users/", Method: "PATCH", Params: ${req.params.id}</div>`
-    );
-  })
-  .delete((req, res, next) => {
-    res.send(
-      `<div>Route: "/users/", Method: "DELETE", Params: ${req.params.id}</div>`
-    );
-  });
+  .get(getSingleUser)
+  .patch(updateUser)
+  .delete(deleteUser);
 
 module.exports = router;

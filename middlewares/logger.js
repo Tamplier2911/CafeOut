@@ -11,10 +11,9 @@ const logger = (req, res, next) => {
   console.log({
     method: req.method,
     from: req.from,
-    timestamp: req.requestTime
+    timestamp: req.requestTime,
+    cookie: req.cookies
   });
-  // CONSOLE LOG COOKIES ON EACH REQUEST
-  // console.log(req.cookies);
   next();
 };
 

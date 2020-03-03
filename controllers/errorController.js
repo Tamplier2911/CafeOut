@@ -39,7 +39,7 @@ const handleJWTExired = err => {
 
 const sendErrorDev = (err, req, res) => {
   console.log(
-    `Status: ${err.status} \n Name: ${err.name} \n Code: ${err.code} \n Message: ${err.message}`
+    `Status: ${err.status} \n Name: ${err.name} \n StatusCode: ${err.statusCode} \n Code: ${err.code} \n Message: ${err.message} \n ${err.stack}`
       .red
   );
   // API
@@ -71,7 +71,7 @@ const sendErrorProd = (err, req, res) => {
       // Programmatic or other unknown error: don't leak error details
     }
     // 1) Log error
-    console.error("ERROR ಥ_ಥ", err);
+    console.error("Non-operational API ERROR ಥ_ಥ", err);
 
     // 2) Send generic message
     return res.status(500).json({
@@ -91,7 +91,7 @@ const sendErrorProd = (err, req, res) => {
     // Programmatic or other unknown error: don't leak error details
   }
   // 1) Log error
-  console.error("ERROR ಥ_ಥ", err);
+  console.error("Non-operational RENDERED ERROR ಥ_ಥ", err);
 
   // 2) Send generic message
   return res.status(err.statusCode).render("error", {
@@ -110,18 +110,19 @@ module.exports = (err, req, res, next) => {
   } else if (process.env.NODE_ENV === "production") {
     // Take copy of original error object, and work with it since now
     // err = JSON.parse(JSON.stringify(err));
+    error = Object.assign({}, err);
 
-    if (err.name === "CastError") {
-      err = handleCastErrorDB(err);
-    } else if (err.code === 11000) {
-      err = handleDuplicateFieldDB(err);
-    } else if (err.name === "ValidationError") {
-      err = handleValidationErrorDB(err);
-    } else if (err.name === "JsonWebTokenError") {
-      err = handleJWTError(err);
-    } else if (err.name === "TokenExpiredError") {
-      err = handleJWTExired(err);
+    if (error.name === "CastError") {
+      error = handleCastErrorDB(error);
+    } else if (error.code === 11000) {
+      error = handleDuplicateFieldDB(error);
+    } else if (error.name === "ValidationError") {
+      error = handleValidationErrorDB(error);
+    } else if (error.name === "JsonWebTokenError") {
+      error = handleJWTError(error);
+    } else if (error.name === "TokenExpiredError") {
+      error = handleJWTExired(error);
     }
-    sendErrorProd(err, req, res);
+    sendErrorProd(error, req, res);
   }
 };
